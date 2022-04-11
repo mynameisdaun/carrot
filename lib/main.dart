@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:jdu_carrot/splash_screen.dart';
+import 'package:jdu_carrot/utils/logger.dart';
 
 void main() {
+  logger.d('carrot logger message');
   runApp(const MyApp());
 }
 
@@ -9,32 +12,40 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: SplashScreen()
+    return FutureBuilder(
+      future: Future.delayed(Duration(seconds: 3), () => 100),
+      builder: (context, snapshot) {
+        return AnimatedSwitcher(
+          child: _splashLoadingWidget(snapshot),
+          duration: Duration(milliseconds: 300),
+        );
+      },
     );
+  }
+
+  StatelessWidget _splashLoadingWidget(AsyncSnapshot<Object?> snapshot) {
+    if(snapshot.hasError) {
+      print('error occur while loading.');
+      return Text('Error occur');
+    } else if (snapshot.hasData) {
+      return carrotApp();
+    } else {
+      return SplashScreen();
+    }
   }
 }
 
-
-class SplashScreen extends StatelessWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+class carrotApp extends StatelessWidget {
+  const carrotApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(height: 100,color:Colors.amber),
-            Container(height: 100,color:Colors.green),
-            Container(height: 100,color:Colors.yellow),
-            Container(height: 100,color:Colors.blue),
-          ],
-      ),),
+    return Container(
+      color: Colors.amber,
     );
   }
 }
+
 
 
 
