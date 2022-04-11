@@ -1,9 +1,14 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:jdu_carrot/splash_screen.dart';
-import 'package:jdu_carrot/utils/logger.dart';
+import 'package:jdu_carrot/router/location.dart';
+import 'package:jdu_carrot/screens/splash_screen.dart';
+
+final _routerDelegate = BeamerDelegate(
+    locationBuilder: BeamerLocationBuilder(beamLocations: [HomeLocation()])
+);
 
 void main() {
-  logger.d('carrot logger message');
+  //logger.d('carrot logger message');
   runApp(const MyApp());
 }
 
@@ -40,8 +45,9 @@ class carrotApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.amber,
+    return MaterialApp.router(
+      routeInformationParser: BeamerParser(),
+      routerDelegate: _routerDelegate,
     );
   }
 }
