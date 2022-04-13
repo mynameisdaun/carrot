@@ -3,12 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:jdu_carrot/router/location.dart';
 import 'package:jdu_carrot/screens/splash_screen.dart';
 
-final _routerDelegate = BeamerDelegate(
-    locationBuilder: BeamerLocationBuilder(beamLocations: [HomeLocation()])
+final _routerDelegate = BeamerDelegate (
+    guards: [
+      BeamGuard(
+          pathPatterns: ['/'],
+          check: (context, location) => false,
+          beamToNamed: (_, __) => '/auth'
+      )],
+    locationBuilder: BeamerLocationBuilder(
+        beamLocations: [HomeLocation(), AuthLocation()]
+    )
 );
 
 void main() {
-  //logger.d('carrot logger message');
   runApp(const MyApp());
 }
 
