@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Future.delayed(Duration(seconds: 3), () => 100),
+      future: Future.delayed(Duration(microseconds: 300), () => 100),
       builder: (context, snapshot) {
         return AnimatedSwitcher(
           child: _splashLoadingWidget(snapshot),
@@ -53,6 +53,12 @@ class carrotApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      theme: ThemeData(
+          primarySwatch: Colors.red,
+          fontFamily: 'DoHyeon',
+          hintColor: Colors.grey[35],
+          textTheme: TextTheme(headline3: TextStyle(fontFamily: 'DoHyeon'), button: TextStyle(color: Colors.white))
+      ),
       routeInformationParser: BeamerParser(),
       routerDelegate: _routerDelegate,
     );
