@@ -1,5 +1,6 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:jdu_carrot/constants/common_size.dart';
 
 class IntroPage extends StatelessWidget {
   PageController controller;
@@ -14,7 +15,7 @@ class IntroPage extends StatelessWidget {
         final sizeOfPosImg = imgSize * 0.1;
         return SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: common_padding),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -41,22 +42,19 @@ class IntroPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                Text('우리 동네 중고 직거래 다우니마켓',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text('우리 동네 중고 거래 다우니마켓',
+                    style:Theme.of(context).textTheme.headline6),
                 Text(
                   '다우니마켓은 동네 직거래 마켓이예요.\n'
                   '내 동네를 설정하고 시작해보세요',
-                  style: TextStyle(fontSize: 14),
+                  style: Theme.of(context).textTheme.subtitle1,
                 ),
                 TextButton(
                     onPressed: () {
                       controller.animateToPage(1, duration: Duration(milliseconds: 500), curve: Curves.ease);
                     },
                     child: Text('우리 동네 설정하고 시작하기',
-                        style: Theme.of(context).textTheme.button),
-                    style: TextButton.styleFrom(
-                        backgroundColor: Theme.of(context).primaryColor))
+                        style: Theme.of(context).textTheme.button),)
               ],
             ),
           ),

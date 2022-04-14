@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jdu_carrot/constants/common_size.dart';
 
 class AddressPage extends StatelessWidget {
   const AddressPage({Key? key}) : super(key: key);
@@ -7,7 +8,7 @@ class AddressPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      minimum: EdgeInsets.only(left: 16, right: 16),
+      minimum: EdgeInsets.only(left: common_padding, right: common_padding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -25,11 +26,10 @@ class AddressPage extends StatelessWidget {
               onPressed: (){},
               icon:Icon(CupertinoIcons.compass, color: Colors.white, size: 20,),
               label: Text('현재 위치 찾기', style: Theme.of(context).textTheme.button,),
-              style: TextButton.styleFrom(backgroundColor: Theme.of(context).primaryColor, minimumSize: Size(10, 48)),
           ),
           Expanded(
             child: ListView.builder(
-              padding: EdgeInsets.symmetric(vertical: 16),
+              padding: EdgeInsets.symmetric(vertical: common_padding),
               itemBuilder: (context, index) {
               return ListTile(
                 leading: Icon(Icons.comment),

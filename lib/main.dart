@@ -57,7 +57,9 @@ class carrotApp extends StatelessWidget {
           primarySwatch: Colors.red,
           fontFamily: 'DoHyeon',
           hintColor: Colors.grey[35],
-          textTheme: TextTheme(headline3: TextStyle(fontFamily: 'DoHyeon'), button: TextStyle(color: Colors.white))
+          textTheme: TextTheme(headline3: TextStyle(fontFamily: 'DoHyeon'), button: TextStyle(color: Colors.white)),
+          appBarTheme: AppBarTheme(backgroundColor: Colors.white, titleTextStyle: TextStyle(color: Colors.black87)),
+          textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(backgroundColor: Colors.red, primary: Colors.white, minimumSize: Size(48, 48)))
       ),
       routeInformationParser: BeamerParser(),
       routerDelegate: _routerDelegate,

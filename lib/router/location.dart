@@ -1,6 +1,6 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:jdu_carrot/screens/auth_screen.dart';
+import 'package:jdu_carrot/screens/start_screen.dart';
 import 'package:jdu_carrot/screens/home_screen.dart';
 
 class HomeLocation extends BeamLocation<BeamState> {
@@ -16,7 +16,7 @@ class HomeLocation extends BeamLocation<BeamState> {
 class AuthLocation extends BeamLocation<BeamState> {
   @override
   List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
-    return [BeamPage(child: AuthScreen(), key: ValueKey('auth'))];
+    return [BeamPage(child: StartScreen(), key: ValueKey('auth'))];
   }
 
   @override
