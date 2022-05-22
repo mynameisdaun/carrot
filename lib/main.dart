@@ -2,16 +2,23 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:jdu_carrot/router/location.dart';
 import 'package:jdu_carrot/screens/splash_screen.dart';
+import 'package:jdu_carrot/screens/start_screen.dart';
+import 'package:jdu_carrot/states/user_provider.dart';
+import 'package:jdu_carrot/utils/logger.dart';
+import 'package:provider/provider.dart';
 
 final _routerDelegate = BeamerDelegate (
     guards: [
       BeamGuard(
-          pathPatterns: ['/'],
-          check: (context, location) => false,
-          beamToNamed: (_, __) => '/auth'
+          pathBlueprints: ['/'],
+          check: (context, location) {
+            return context.watch<UserProvider>().userState;
+            //return true;
+          },
+          showPage: BeamPage(child: StartScreen())
       )],
     locationBuilder: BeamerLocationBuilder(
-        beamLocations: [HomeLocation(), AuthLocation()]
+        beamLocations: [HomeLocation()]
     )
 );
 
@@ -52,17 +59,22 @@ class carrotApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      theme: ThemeData(
-          primarySwatch: Colors.red,
-          fontFamily: 'DoHyeon',
-          hintColor: Colors.grey[35],
-          textTheme: TextTheme(headline3: TextStyle(fontFamily: 'DoHyeon'), button: TextStyle(color: Colors.white)),
-          appBarTheme: AppBarTheme(backgroundColor: Colors.white, titleTextStyle: TextStyle(color: Colors.black87)),
-          textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(backgroundColor: Colors.red, primary: Colors.white, minimumSize: Size(48, 48)))
+    return ChangeNotifierProvider<UserProvider>(
+      create: (BuildContext context) {
+        return UserProvider();
+        },
+      child: MaterialApp.router(
+        theme: ThemeData(
+            primarySwatch: Colors.red,
+            fontFamily: 'DoHyeon',
+            hintColor: Colors.grey[35],
+            textTheme: TextTheme(headline3: TextStyle(fontFamily: 'DoHyeon'), button: TextStyle(color: Colors.white)),
+            appBarTheme: AppBarTheme(backgroundColor: Colors.white, titleTextStyle: TextStyle(color: Colors.black87), actionsIconTheme: IconThemeData(color:Colors.black87)),
+            textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(backgroundColor: Colors.red, primary: Colors.white, minimumSize: Size(48, 48)))
+        ),
+        routeInformationParser: BeamerParser(),
+        routerDelegate: _routerDelegate,
       ),
-      routeInformationParser: BeamerParser(),
-      routerDelegate: _routerDelegate,
     );
   }
 }

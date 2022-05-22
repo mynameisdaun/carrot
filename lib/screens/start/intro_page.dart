@@ -1,6 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:jdu_carrot/constants/common_size.dart';
+import 'package:jdu_carrot/states/user_provider.dart';
+import 'package:jdu_carrot/utils/logger.dart';
+import 'package:provider/src/provider.dart';
 
 class IntroPage extends StatelessWidget {
   PageController controller;
@@ -8,6 +12,7 @@ class IntroPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    logger.d('current user state: ${context.read<UserProvider>().userState}');
     return LayoutBuilder(
       builder: (context, constraints) {
         Size size = MediaQuery.of(context).size;
@@ -50,7 +55,7 @@ class IntroPage extends StatelessWidget {
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 TextButton(
-                    onPressed: () {
+                    onPressed: () async {
                       controller.animateToPage(1, duration: Duration(milliseconds: 500), curve: Curves.ease);
                     },
                     child: Text('우리 동네 설정하고 시작하기',

@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jdu_carrot/constants/common_size.dart';
+import 'package:jdu_carrot/screens/start/address_service.dart';
+import 'package:jdu_carrot/utils/logger.dart';
 
 class AddressPage extends StatelessWidget {
-  const AddressPage({Key? key}) : super(key: key);
+  AddressPage({Key? key}) : super(key: key);
+
+  TextEditingController _addressController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +17,7 @@ class AddressPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TextFormField(
+            controller: _addressController,
             decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search, color: Colors.grey,),
                 hintText: '도로명으로 검색',
@@ -23,7 +28,13 @@ class AddressPage extends StatelessWidget {
             ),
           ),
           TextButton.icon(
-              onPressed: (){},
+              onPressed: (){
+                final text = _addressController.text;
+                logger.d(text);
+                if(text.isNotEmpty) {
+                  AddressService().searchAddressByStr(text);
+                }
+              },
               icon:Icon(CupertinoIcons.compass, color: Colors.white, size: 20,),
               label: Text('현재 위치 찾기', style: Theme.of(context).textTheme.button,),
           ),
