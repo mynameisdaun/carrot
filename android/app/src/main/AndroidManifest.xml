@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jdu.carrot.jdu_carrot">
-   <application
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <application
         android:label="jdu_carrot"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">

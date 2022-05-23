@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "443223925117",
+    "project_id": "jducarrot",
+    "storage_bucket": "jducarrot.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:443223925117:android:fb5e2b3e8edaa69fae2c14",
+        "android_client_info": {
+          "package_name": "com.jdu.carrot.jdu_carrot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "443223925117-ev0a54v8as9q3134mc23joddh7mm9tht.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jdu.carrot.jdu_carrot",
+            "certificate_hash": "d792296b6582d0268b930d89634f350494c3bad7"
+          }
+        },
+        {
+          "client_id": "443223925117-ghqvaigci45f1qtd31adck3jt7kq8ato.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMw7xgnIYQliBO4BaROX9U-ioDO1A-w9o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "443223925117-ghqvaigci45f1qtd31adck3jt7kq8ato.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
