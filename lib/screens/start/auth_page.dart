@@ -2,9 +2,11 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:jdu_carrot/constants/common_size.dart';
+import 'package:jdu_carrot/constants/shared_pref_keys.dart';
 import 'package:jdu_carrot/states/user_provider.dart';
 import 'package:jdu_carrot/utils/logger.dart';
 import 'package:provider/src/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthPage extends StatefulWidget {
   AuthPage({Key? key}) : super(key: key);
@@ -13,23 +15,30 @@ class AuthPage extends StatefulWidget {
   State<AuthPage> createState() => _AuthPageState();
 }
 
+const duration = Duration(milliseconds: 300);
+
 class _AuthPageState extends State<AuthPage> {
-  final inputBorder = OutlineInputBorder(borderSide: BorderSide(color: Colors.grey));
+  final inputBorder =
+  OutlineInputBorder(borderSide: BorderSide(color: Colors.grey));
 
-  TextEditingController _phoneNumberController = TextEditingController(text: "010");
+  TextEditingController _phoneNumberController =
+  TextEditingController(text: "010");
 
-  TextEditingController _codeController        = TextEditingController();
+  TextEditingController _codeController = TextEditingController();
+
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   VerificationStatus _verificationStatus = VerificationStatus.none;
 
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String? _verificationId;
+  int? _forceResendingToken;
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         Size size = MediaQuery.of(context).size;
-        //ignoring true 이면 전부 무시한다
+
         return IgnorePointer(
           ignoring: _verificationStatus == VerificationStatus.verifying,
           child: Form(
@@ -42,72 +51,102 @@ class _AuthPageState extends State<AuthPage> {
                 ),
               ),
               body: Padding(
-                padding: EdgeInsets.all(common_padding),
+                padding: const EdgeInsets.all(common_padding),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Row(
                       children: [
-                        ExtendedImage.asset('assets/imgs/padlock.png', width: size.width*0.15, height: size.height*0.15,),
-                        SizedBox(width: common_sm_padding,),
-                        Text('다우니마켓은 휴대폰 번호로 가입해요.\n휴대폰은 안전하게 보관되며\n어디에도 공개되지 않아요.')
+                        ExtendedImage.asset(
+                          'assets/imgs/padlock.png',
+                          width: size.width * 0.15,
+                          height: size.width * 0.15,
+                        ),
+                        SizedBox(
+                          width: common_sm_padding,
+                        ),
+                        Text('''토마토마켓은 휴대폰 번호로 가입해요.
+번호는 안전하게 보관 되며
+어디에도 공개되지 않아요.''')
                       ],
                     ),
-                    SizedBox(height: common_padding,),
-                    TextFormField(
-                      controller: _phoneNumberController,
-                      inputFormatters: [MaskedInputFormatter("000 0000 0000")],
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                        focusedBorder: inputBorder,
-                        border: inputBorder
-                      ),
-                      validator: (phoneNumber) {
-                        if(phoneNumber != null && phoneNumber.length ==13) {
-                          return null;
-                        }else {
-                          return '올바른 전화번호를 입력해 주세요.';
-                        }
-                      },
+                    SizedBox(
+                      height: common_padding,
                     ),
-                    SizedBox(height: common_padding,),
-                    TextButton(onPressed: (){
-                      if(_formKey.currentState != null && _formKey.currentState!.validate()) {
-                        setState(() {
-                          _verificationStatus = VerificationStatus.codeSent;
-                        });
-                      }
-
-
-                    }, child: Text('인증문자 발송')),
-                    SizedBox(height: common_padding,),
+                    TextFormField(
+                        controller: _phoneNumberController,
+                        keyboardType: TextInputType.phone,
+                        inputFormatters: [
+                          MaskedInputFormatter("000 0000 0000")
+                        ],
+                        decoration: InputDecoration(
+                            focusedBorder: inputBorder, border: inputBorder),
+                        validator: (phoneNumber) {
+                          if (phoneNumber != null && phoneNumber.length == 13) {
+                            return null;
+                          } else {
+                            //error
+                            return '전화번호 똑바로 입력해줄래?';
+                          }
+                        }),
+                    SizedBox(
+                      height: common_sm_padding,
+                    ),
+                    TextButton(
+                        onPressed: () async {
+                          if (_verificationStatus ==
+                              VerificationStatus.codeSending) return;
+                          setState(() {
+                            _verificationStatus =
+                                VerificationStatus.codeSent;
+                          });
+                        },
+                        child: (_verificationStatus ==
+                            VerificationStatus.codeSending)
+                            ? SizedBox(
+                          height: 26,
+                          width: 26,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        )
+                            : Text('인증문자 발송')),
+                    SizedBox(
+                      height: common_padding,
+                    ),
                     AnimatedOpacity(
                       duration: Duration(milliseconds: 300),
-                      opacity: (_verificationStatus == VerificationStatus.none ? 0 : 1),
+                      curve: Curves.easeInOut,
+                      opacity: (_verificationStatus == VerificationStatus.none)
+                          ? 0
+                          : 1,
                       child: AnimatedContainer(
-                        duration: Duration(seconds: 1),
-                        height: getVerificationHeight(_verificationStatus),
+                        duration: duration,
                         curve: Curves.easeInOut,
+                        height: getVerificationHeight(_verificationStatus),
                         child: TextFormField(
                           controller: _codeController,
-                          inputFormatters: [MaskedInputFormatter("0000000")],
                           keyboardType: TextInputType.number,
+                          inputFormatters: [MaskedInputFormatter("000000")],
                           decoration: InputDecoration(
-                              focusedBorder: inputBorder,
-                              border: inputBorder
-                          ),
+                              focusedBorder: inputBorder, border: inputBorder),
                         ),
                       ),
                     ),
-                    SizedBox(height: common_padding,),
-                    AnimatedContainer(duration: Duration(seconds: 1),
-                    height: getVerificationBtnHeight(_verificationStatus),
-                    child: TextButton(
-                        onPressed: (){attemptVerify(context);},
-                        child: (_verificationStatus == VerificationStatus.verifying
-                            ? CircularProgressIndicator(color:Colors.white)
-                            : Text("확인")))
-                    )
+                    AnimatedContainer(
+                        duration: duration,
+                        curve: Curves.easeInOut,
+                        height: getVerificationBtnHeight(_verificationStatus),
+                        child: TextButton(
+                            onPressed: () {
+                              attemptVerify(context);
+                            },
+                            child: (_verificationStatus ==
+                                VerificationStatus.verifying)
+                                ? CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                                : Text('인증'))),
                   ],
                 ),
               ),
@@ -119,9 +158,10 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   double getVerificationHeight(VerificationStatus status) {
-    switch(status) {
+    switch (status) {
       case VerificationStatus.none:
         return 0;
+      case VerificationStatus.codeSending:
       case VerificationStatus.codeSent:
       case VerificationStatus.verifying:
       case VerificationStatus.verificationDone:
@@ -130,9 +170,10 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   double getVerificationBtnHeight(VerificationStatus status) {
-    switch(status) {
+    switch (status) {
       case VerificationStatus.none:
         return 0;
+      case VerificationStatus.codeSending:
       case VerificationStatus.codeSent:
       case VerificationStatus.verifying:
       case VerificationStatus.verificationDone:
@@ -140,24 +181,25 @@ class _AuthPageState extends State<AuthPage> {
     }
   }
 
-
   void attemptVerify(BuildContext context) async {
-    setState(() {
-      _verificationStatus = VerificationStatus.verifying;
-    });
-
-    await Future.delayed(Duration(seconds: 1));
-   //3초동안 아무것도 못하게 막는다....
     setState(() {
       _verificationStatus = VerificationStatus.verificationDone;
     });
-    context.read<UserProvider>().setUserAuth(true);
-
-
   }
 
+  _getAddress() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String address = prefs.getString(SHARED_ADDRESS) ?? "";
+    double lat = prefs.getDouble(SHARED_LAT) ?? 0;
+    double lon = prefs.getDouble(SHARED_LON) ?? 0;
+
+  }
 }
 
 enum VerificationStatus {
-  none, codeSent, verifying, verificationDone
+  none,
+  codeSending,
+  codeSent,
+  verifying,
+  verificationDone
 }
